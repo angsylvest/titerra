@@ -179,8 +179,8 @@ class VariancesGenerator():
 
         amps_key = self.attr['variance_type'] + '_amp'
         try:
-            amps = self.main_config['perf']['flexibility'][amps_key]
-            hzs = self.main_config['perf']['flexibility']['hz']
+            amps = self.main_config['sierra']['perf']['flexibility'][amps_key]
+            hzs = self.main_config['sierra']['perf']['flexibility']['hz']
         except KeyError:
             msg = "'hz' or '{0}' not found in 'flexibility' section of main config file for project".format(
                 amps_key)

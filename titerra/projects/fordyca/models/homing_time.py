@@ -100,16 +100,18 @@ class IntraExp_HomingTime_1Robot():
         # Calculate nest extent
         nest = rep.Nest(cmdopts, criteria, exp_num)
 
-        # We calculate per-sim, rather than using the averaged block cluster results, because for
-        # power law distributions different simulations have different cluster locations, which
-        # affects the distribution via locality.
+        # We calculate per-sim, rather than using the averaged block cluster
+        # results, because for power law distributions different simulations
+        # have different cluster locations, which affects the distribution via
+        # locality.
         #
-        # For all other block distributions, we can operate on the averaged results, because the
-        # position of block clusters is the same in all simulations.
+        # For all other block distributions, we can operate on the averaged
+        # results, because the position of block clusters is the same in all
+        # simulations.
         if 'PL' in cmdopts['scenario']:
             result_opaths = [os.path.join(cmdopts['exp_output_root'],
                                           d,
-                                          self.main_config['sim']['sim_metrics_leaf'])
+                                          self.main_config['sierra']['run']['run_metrics_leaf'])
                              for d in os.listdir(cmdopts['exp_output_root'])]
         else:
             result_opaths = [os.path.join(cmdopts['exp_stat_root'])]

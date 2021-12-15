@@ -277,8 +277,8 @@ class RobustnessUnivarGenerator:
                  main_config: tp.Dict[str, tp.Any],
                  criteria: bc.IConcreteBatchCriteria) -> None:
         self.logger.info("From %s", cmdopts["batch_stat_collate_root"])
-        perf_csv = main_config['perf']['intra_perf_csv']
-        perf_col = main_config['perf']['intra_perf_col']
+        perf_csv = main_config['sierra']['perf']['intra_perf_csv']
+        perf_col = main_config['sierra']['perf']['intra_perf_col']
 
         if criteria.pm_query('robustness-saa'):
             SteadyStateRobustnessSAAUnivar(main_config,
@@ -502,8 +502,8 @@ class RobustnessBivarGenerator:
                  criteria: bc.IConcreteBatchCriteria) -> None:
         self.logger.info("From %s", cmdopts["batch_stat_collate_root"])
 
-        perf_csv = main_config['perf']['intra_perf_csv']
-        perf_col = main_config['perf']['intra_perf_col']
+        perf_csv = main_config['sierra']['perf']['intra_perf_csv']
+        perf_col = main_config['sierra']['perf']['intra_perf_col']
 
         if criteria.pm_query('robustness-saa'):
             SteadyStateRobustnessSAABivar(main_config,
