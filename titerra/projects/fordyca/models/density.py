@@ -24,10 +24,11 @@ import scipy.integrate as si
 # Project packages
 import sierra.core.utils
 from sierra.core.vector import Vector3D
+from sierra.core.utils import ArenaExtent
 
 import titerra.projects.fordyca.models.representation as rep
 from titerra.projects.fordyca.models.dist_measure import DistanceMeasure2D
-
+import titerra.projects.fordyca.models.heterogeneity_calc as hc
 
 class BaseDensity():
     def at_point(self, x: tp.Optional[float] = None, y: tp.Optional[float] = None) -> float:
@@ -145,10 +146,12 @@ class BlockAcqDensity(BaseDensity):
     def __init__(self,
                  nest: rep.Nest,
                  cluster: rep.BlockCluster,
+                 clusters: rep.BlockClusterSet, # added for heterogeneity measurement
                  dist_measure: DistanceMeasure2D):
         self.nest = nest
         self.dist_measure = dist_measure
         self.cluster = cluster
+        self.clusters = clusters
         cd = ClusterBlockDensity(cluster=cluster, nest=nest)
 
         # Cluster density can be 0 for PL if the cluster is small and no blocks were ever
@@ -186,11 +189,26 @@ class BlockAcqDensity(BaseDensity):
             assert x is not None and y is not None
             pt = Vector3D(x, y)
 
+        # calculate level of heterogeneity across clusters
+        cluster_list = list(self.clusters.clusters)
+        # print('NUM OF CLUSTERS', len(cluster_list))
+        arena_dims = self.nest.arena_dim
+        # print('NEST CENTER ---', self.nest.center)
+
+        diagonal = math.sqrt((arena_dims.xsize()**2) + (arena_dims.ysize()**2))
+        cluster_calculator = hc.clusterCalc(cluster_list, diagonal, arena_dims.xsize(), arena_dims.ysize())
+        scaling_param = cluster_calculator.run()
+        print('scaling param ----', scaling_param) 
+
         # No acquisitions possible if the cluster never had any blocks in it during simulation.
         if self.rho is None:
             return 0.0
 
         z = self.dist_measure.to_nest(pt)
-        if z < 0:
-            z = 0
-        return 1.0 / ((math.sqrt(z) + self.rho) ** 2) * self.norm_factor
+        if z <= 0:
+            z = 0 # need to handle case in which z is 0 (wouldn't probabilty of block acq at nest be 0?), wouldn't you want to square this?
+            return (1.0 / ((math.sqrt(z) + self.rho) ** 2) * self.norm_factor) 
+            # return 0 
+
+        return (1.0 / ((math.sqrt(z) + self.rho) ** 2) * self.norm_factor) 
+        # return (self.rho / (math.sqrt(z))) *  (1 - scaling_param)

@@ -383,15 +383,15 @@ class ExpectedAcqDist():
     def __call__(self, cmdopts: tp.Dict[str, tp.Any], result_opath: str, nest: rep.Nest) -> float:
 
         # Get clusters in the arena
-        clusters = rep.BlockClusterSet(cmdopts, nest, result_opath)
+        self.clusters = rep.BlockClusterSet(cmdopts, nest, result_opath)
 
         # Integrate to find average distance from nest to all clusters, weighted by acquisition
         # density.
         dist = 0.0
-        for cluster in clusters:
+        for cluster in self.clusters:
             dist += self._nest_to_cluster(cluster, nest, cmdopts['scenario'])
 
-        return dist / len(clusters)
+        return dist / len(self.clusters)
 
     def _nest_to_cluster(self,
                          cluster: rep.BlockCluster,
@@ -399,7 +399,7 @@ class ExpectedAcqDist():
                          scenario: str) -> float:
         dist_measure = DistanceMeasure2D(scenario, nest=nest)
 
-        density = BlockAcqDensity(nest=nest, cluster=cluster, dist_measure=dist_measure)
+        density = BlockAcqDensity(nest=nest, cluster=cluster, dist_measure=dist_measure, clusters = self.clusters)
 
         # Compute expected value of X coordinate of average distance from nest to acquisition
         # location.

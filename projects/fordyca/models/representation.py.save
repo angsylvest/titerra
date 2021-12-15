@@ -28,8 +28,8 @@ from sierra.core.experiment_spec import ExperimentSpec
 from sierra.core.utils import ArenaExtent
 from sierra.core.vector import Vector3D
 
-import titerra.projects.titan.generators.scenario_generator_parser as sgp
-import titerra.projects.titan.variables.nest as nest
+import projects.titan.generators.scenario_generator_parser as sgp
+import projects.fordyca.variables.nest as nest
 
 
 class BlockCluster():
@@ -45,17 +45,11 @@ class BlockCluster():
         ymin = clusters_df.filter(regex=col_stem + '_ymin').iloc[-1].values[0]
         ymax = clusters_df.filter(regex=col_stem + '_ymax').iloc[-1].values[0]
 
-        # calculate center of cluster 
-        x_center = (xmin + xmax) / 2
-        y_center = (ymin + ymax) / 2
-
         # We approximate the # blocks in a cluster (which changes dynamically) as a steady state
         # quantity, where each cluster always contains the fraction of total blocks in the arena
         # corresponding to how much of the overall distributable area it contains.
-        total_blocks = clusters_df.filter(
-            regex='int_avg_cluster[0-9]*_block_count').iloc[-1].sum()
-        total_area = clusters_df.filter(
-            regex='cluster[0-9]*_area').iloc[-1].sum()
+        total_blocks = clusters_df.filter(regex='int_avg_cluster[0-9]*_block_count').iloc[-1].sum()
+        total_area = clusters_df.filter(regex='cluster[0-9]*_area').iloc[-1].sum()
         cluster_area = ArenaExtent.from_corners(ll=Vector3D(xmin, ymin),
                                                 ur=Vector3D(xmax, ymax)).area()
         cluster_avg_blocks = total_blocks * cluster_area / total_area
@@ -63,14 +57,12 @@ class BlockCluster():
         return BlockCluster(ll=Vector3D(xmin, ymin),
                             ur=Vector3D(xmax, ymax),
                             cluster_id=cluster_id,
-                            avg_blocks=cluster_avg_blocks, 
-                            cluster_center = (x_center, y_center)) # cluster center added to BlockCluster Class
+                            avg_blocks=cluster_avg_blocks)
 
-    def __init__(self, ll: Vector3D, ur: Vector3D, cluster_id: int, avg_blocks: float, cluster_center: tuple) -> None:
+    def __init__(self, ll: Vector3D, ur: Vector3D, cluster_id: int, avg_blocks: float) -> None:
         self.extent = ArenaExtent.from_corners(ll=ll, ur=ur)
         self.cluster_id = cluster_id
         self.avg_blocks = avg_blocks
-        self.cluster_center = cluster_center
 
 
 class Nest():
@@ -90,8 +82,6 @@ class Nest():
                 dims = Vector3D(float(x), float(y), 0.0)
 
         self.extent = ArenaExtent(dims, center - dims / 2.0)
-        self.arena_dim = spec.arena_dim
-        self.center = center # added so that i have access to that position 
 
 
 class BlockClusterSet():
@@ -110,8 +100,7 @@ class BlockClusterSet():
                  nest: Nest,
                  sim_opath: str) -> None:
 
-        clusters_df = sierra.core.utils.pd_csv_read(
-            os.path.join(sim_opath, 'block-clusters.csv'))
+        clusters_df = sierra.core.utils.pd_csv_read(os.path.join(sim_opath, 'block-clusters.csv'))
         n_clusters = len([c for c in clusters_df.columns if 'xmin' in c])
 
         # Create extents from clusters
@@ -130,51 +119,40 @@ class BlockClusterSet():
             ur1 = Vector3D(nest.extent.ll.x, cluster.extent.ur.y)
             c1_extent = ArenaExtent.from_corners(ll=ll1, ur=ur1)
 
-            center_cluster = ( (nest.extent.ll.x + nest.extent.ll.x) / 2, (nest.extent.ll.y + nest.extent.ur.y) / 2)
-
             c1 = BlockCluster(ll=ll1,
                               ur=ur1,
                               cluster_id=0,
-                              avg_blocks=cluster.avg_blocks * c1_extent.area() / total_area,
-                              cluster_center=center_cluster)
+                              avg_blocks=cluster.avg_blocks * c1_extent.area() / total_area)
 
             ll2 = Vector3D(nest.extent.ll.x, cluster.extent.ll.y)
             ur2 = Vector3D(nest.extent.ur.x, nest.extent.ll.y)
             c2_extent = ArenaExtent.from_corners(ll=ll2, ur=ur2)
 
-            center_cluster = ( (nest.extent.ur.x + nest.extent.ll.x) / 2, (nest.extent.ll.y + nest.extent.ll.y) / 2) 
-
             c2 = BlockCluster(ll=ll2,
                               ur=ur2,
                               cluster_id=1,
-                              avg_blocks=cluster.avg_blocks * c2_extent.area() / total_area, 
-                              cluster_center=center_cluster )
+                              avg_blocks=cluster.avg_blocks * c2_extent.area() / total_area)
 
             ll3 = Vector3D(nest.extent.ll.x, nest.extent.ur.y)
             ur3 = Vector3D(nest.extent.ur.x, cluster.extent.ur.y)
             c3_extent = ArenaExtent.from_corners(ll=ll3, ur=ur3)
 
-            center_cluster = ( (nest.extent.ur.x + nest.extent.ll.x) / 2, (nest.extent.ur.y + nest.extent.ur.y) / 2)
-
             c3 = BlockCluster(ll=ll3,
                               ur=ur3,
                               cluster_id=2,
-                              avg_blocks=cluster.avg_blocks * c3_extent.area() / total_area, 
-                              cluster_center=center_cluster)
+                              avg_blocks=cluster.avg_blocks * c3_extent.area() / total_area)
 
             ll4 = Vector3D(nest.extent.ur.x, cluster.extent.ll.y)
             ur4 = cluster.extent.ur
             c4_extent = ArenaExtent.from_corners(ll=ll4, ur=ur4)
 
-            center_cluster = ( (nest.extent.ur.x + nest.extent.ur.x) / 2, (nest.extent.ll.y + nest.extent.ur.y) / 2)
-
             c4 = BlockCluster(ll=ll4,
                               ur=ur4,
                               cluster_id=3,
-                              avg_blocks=cluster.avg_blocks * c4_extent.area() / total_area, 
-                              cluster_center=center_cluster )
+                              avg_blocks=cluster.avg_blocks * c4_extent.area() / total_area)
 
             self.clusters = set([c1, c2, c3, c4])
+
         else:  # General case
             for c in range(0, n_clusters):
                 self.clusters |= set([BlockCluster.from_df(clusters_df, c)])
