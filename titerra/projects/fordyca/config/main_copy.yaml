@@ -3,4 +3,3 @@ sim:
   argos_frames_leaf: 'frames'
 
 perf: '2021-tro-sc1-perf.yaml'
-

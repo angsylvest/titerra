@@ -190,15 +190,15 @@ class BlockAcqDensity(BaseDensity):
             pt = Vector3D(x, y)
 
         # calculate level of heterogeneity across clusters
-        cluster_list = list(self.clusters.clusters)
+        # cluster_list = list(self.clusters.clusters)
         # print('NUM OF CLUSTERS', len(cluster_list))
-        arena_dims = self.nest.arena_dim
+        # arena_dims = self.nest.arena_dim
         # print('NEST CENTER ---', self.nest.center)
 
-        diagonal = math.sqrt((arena_dims.xsize()**2) + (arena_dims.ysize()**2))
-        cluster_calculator = hc.clusterCalc(cluster_list, diagonal, arena_dims.xsize(), arena_dims.ysize())
-        scaling_param = cluster_calculator.run()
-        print('scaling param ----', scaling_param) 
+        # diagonal = math.sqrt((arena_dims.xsize()**2) + (arena_dims.ysize()**2))
+        # cluster_calculator = hc.clusterCalc(cluster_list, diagonal, arena_dims.xsize(), arena_dims.ysize())
+        # scaling_param = cluster_calculator.run()
+        # print('scaling param ----', scaling_param) 
 
         # No acquisitions possible if the cluster never had any blocks in it during simulation.
         if self.rho is None:
