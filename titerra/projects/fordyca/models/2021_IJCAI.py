@@ -53,7 +53,7 @@ def available_models(category: str):
     if category == 'intra':
         return ['IntraExp_ODE_NRobots']
     elif category == 'inter':
-        return ['InterExp_ODE_NRobots']
+        return ['InterExp_ODEWrapper_NRobots']
     else:
         return None
 

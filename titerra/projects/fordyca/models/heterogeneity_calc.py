@@ -59,10 +59,13 @@ class clusterCalc():
     def run(self):
         if (len(self.clusterList) == 1): # Handles SS case directly
            cx, cy  = self.clusterList[0].cluster_center
-           dist = math.sqrt((cx - 3.2)**2 + (cy - 8)**2)
+           # IMPORTANT NOTE: this value is the nest center
+           nest_x, nest_y = (3.2, 8)
+           dist = math.sqrt((cx - nest_x)**2 + (cy - nest_y)**2)
            return (dist / self.diagonal)*(1/self.area)
 
-        elif (len(self.clusterList) == 2): # Handles DS case directly 
+        elif (len(self.clusterList) == 2): # Handles DS case directly
+           # IMPORTANT NOTE: this value is the nest center 
            leftx, lefty = (16, 8)
            cx1, cy1 = self.clusterList[0].cluster_center
            cx2, cy2 = self.clusterList[1].cluster_center

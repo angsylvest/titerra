@@ -73,32 +73,32 @@ intra_scenario:
 inter_scenario:
   graphs:
     # # raw performance
-    # - src_stem: PM-ss-raw
-    #   dest_stem: sc-PM-ss-raw
-    #   title: 'Swarm Performance'
-    #   label: 'Block Collection Rate $P(\mathcal{N})$'
-    #   include_exp: '0:'
+    - src_stem: PM-ss-raw
+      dest_stem: sc-PM-ss-raw
+      title: 'Swarm Performance'
+      label: 'Block Collection Rate $P(\mathcal{N})$'
+      # include_exp: '1:'
 
     #   # scalability
     # - src_stem: PM-ss-scalability-parallel-frac
-    #   dest_stem: sc-PM-ss-scalability-parallel-frac
-    #   title: 'Swarm Scalability (Parallel Fraction)'
-    #   label: '$\log_{2}(Scalability Value)$'
-    #   include_exp: '1:'
+      # dest_stem: sc-PM-ss-scalability-parallel-frac
+      # title: 'Swarm Scalability (Parallel Fraction)'
+      # label: '$\log_{2}(Scalability Value)$'
+      # include_exp: '1:'
 
 
     #   # self-organization
     # - src_stem: PM-ss-self-org-mfl
-    #   dest_stem: sc-PM-ss-self-org-mfl
-    #   title: 'Swarm Spatial Self Organization'
-    #   label: 'Self-Organization Value'
-    #   include_exp: '1:'
+      # dest_stem: sc-PM-ss-self-org-mfl
+      # title: 'Swarm Spatial Self Organization'
+      # label: 'Self-Organization Value'
+      # include_exp: '1:'
 
     # - src_stem: PM-ss-self-org-ifl
-    #   dest_stem: sc-PM-ss-self-org-ifl
-    #   title: 'Swarm Spatial Self Organization'
-    #   label: 'Self-Organization Value'
-    #   include_exp: '1:'
+      # dest_stem: sc-PM-ss-self-org-ifl
+      # title: 'Swarm Spatial Self Organization'
+      # label: 'Self-Organization Value'
+      # include_exp: '1:'
 
     - src_stem: block-transporter-homing-nest-int-avg
       dest_stem: sc-N_h

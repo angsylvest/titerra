@@ -1,10 +1,10 @@
-lbase_graphs: &base_graphs
+base_graphs: &base_graphs
   - LN_fsm_interference  
- #  - LN_spatial_movement
- #  - LN_spatial_nest_zone
+  - LN_spatial_movement # was commented out 
+  - LN_spatial_nest_zone # was commented out
   - LN_block_trans
   - LN_block_acq
- #  - LN_block_manip # added 
+  - LN_block_manip # added 
   # - LN_convergence
   # - LN_perception
   # - LN_population
