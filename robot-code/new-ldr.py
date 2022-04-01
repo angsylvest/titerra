@@ -9,7 +9,7 @@ from adafruit_extended_bus import ExtendedI2C as I2C
 # code for using ldr sensor with i2c buses
 # also downloaded adafruit_tsl2591 from source to get library
 # in order to use must update boot/config.txt file to include bus using the following:
-# dtoverlay=i2c-gpio,bus=4,i2c_gpio_delay_us=1,i2c_gpio_sda=23,i2c_gpio_scl=24
+# dtoverlay=i2c-gpio,bus=5,i2c_gpio_delay_us=1,i2c_gpio_sda=14,i2c_gpio_scl=4
 
 
 # initalize ldr in default gpio
