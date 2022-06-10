@@ -9,15 +9,16 @@ heterogenity in the environmnent.
 
 class clusterCalc():
 
-    def __init__(self, clusterList, diagonal, arena_x = 0, arena_y = 0):
+    def __init__(self, clusterList, diagonal, arena_x, arena_y, nest_center_x, nest_center_y, rho):
         self.clusterList = clusterList
         self.nearestNeighbors = {}
         self.diagonal = diagonal
         self.arena_x = arena_x 
         self.arena_y = arena_y
         self.area = self.arena_x * self.arena_y
-        # self.nest_center_x = nest_center_x
-        # self.nest_center_y = nest_center_y
+        self.nest_center_x = nest_center_x
+        self.nest_center_y = nest_center_y
+        self.rho = rho 
 
     def calcNearestNeighbors(self):
 
@@ -60,21 +61,27 @@ class clusterCalc():
         if (len(self.clusterList) == 1): # Handles SS case directly
            cx, cy  = self.clusterList[0].cluster_center
            # IMPORTANT NOTE: this value is the nest center
-           nest_x, nest_y = (3.2, 8)
+           nest_x, nest_y = self.nest_center_x, self.nest_center_y 
            dist = math.sqrt((cx - nest_x)**2 + (cy - nest_y)**2)
-           return (dist / self.diagonal)*(1/self.area)
+           return (dist / self.diagonal)*(self.arena_x**(0.1))*self.rho 
 
         elif (len(self.clusterList) == 2): # Handles DS case directly
            # IMPORTANT NOTE: this value is the nest center 
-           leftx, lefty = (16, 8)
+           leftx, lefty = self.nest_center_x, self.nest_center_y
            cx1, cy1 = self.clusterList[0].cluster_center
            cx2, cy2 = self.clusterList[1].cluster_center
-           left_calc = math.sqrt((cx1 - leftx) ** 2 + cy1 ** 2)
-           right_calc = math.sqrt((cx2 + leftx) **2 + cy2 ** 2) 
-           return (((left_calc + right_calc) / 2) / self.diagonal)*(2/self.area)
+           left_calc = math.sqrt((cx1 - leftx) ** 2 + (cy1 - lefty) ** 2)
+           right_calc = math.sqrt((cx2 - leftx) **2 + (cy2 - lefty) ** 2) 
+           return (((left_calc + right_calc) / 2) / self.diagonal)*(self.arena_x**(0.1))*self.rho
 
         self.calcNearestNeighbors()
         variance = self.calcVariance()
-        return (variance / self.diagonal)*(len(self.clusterList)/self.area)
+        if self.rho is not None:
+                complete_list = self.calcNearestNeighbors()
+                mean_neighbor = [statistics.mean(i) for i in zip(*complete_list)]  
+                # return ((self.rho)*self.arena_x**(0.75)*((statistics.mean(mean_neighbor)/self.diagonal))*2**(variance/self.diagonal)) # RN case
+                return ((self.rho)*self.arena_x**(0.85)*((statistics.mean(mean_neighbor)/self.diagonal)*2**(variance/self.diagonal))) # PL case 
+        else: 
+                return 0 
 
 

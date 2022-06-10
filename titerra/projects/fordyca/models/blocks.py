@@ -40,7 +40,7 @@ import sierra.core.variables.time_setup as ts
 from titerra.projects.fordyca.models.density import BlockAcqDensity
 from titerra.projects.fordyca.models.dist_measure import DistanceMeasure2D
 import titerra.projects.fordyca.models.diffusion as diffusion
-
+import titerra.projects.fordyca.models.scenario_heterogeneity as sh # added for testing purposes
 
 def available_models(category: str):
     if category == 'intra':
@@ -136,6 +136,12 @@ class IntraExp_BlockAcqRate_NRobots():
         n_robots = criteria.populations(cmdopts)[exp_num]
 
         spec = ExperimentSpec(criteria, exp_num, cmdopts)
+
+        # added to check avg scenario heterogeneity 
+        calculator = sh.Calculator(cmdopts['scenario'])
+        avg_hetero = calculator.from_results(self.main_config, cmdopts, spec, nest)
+        print('AVERAGE HETEROGENEITY ----', avg_hetero) 
+
         exp_def = XMLAttrChangeSet.unpickle(spec.exp_def_fpath)
         time_params = ts.ARGoSTimeSetup.extract_time_params(exp_def)
 
