@@ -87,7 +87,7 @@ class Calculator:
             # IMPORTANT NOTE: this value is the nest center
             nest_x, nest_y = nest_x, nest_y
             dist = math.sqrt((cx - nest_x)**2 + (cy - nest_y)**2)
-            return (dist / diagonal)*(arena_dims.xsize()**(0.1))*0.055
+            return (dist / diagonal)*(arena_dims.xsize()**(0.1))*0.055 + 0.1
 
 
         elif 'DS' in self.scenario:
@@ -99,13 +99,13 @@ class Calculator:
             cx2, cy2 = list(clusters.clusters)[1].cluster_center
             left_calc = math.sqrt((cx1 - leftx) ** 2 + (cy1 - lefty) ** 2)
             right_calc = math.sqrt((cx2 - leftx) **2 + (cy2 - lefty) ** 2)
-            return (((left_calc + right_calc) / 2) / diagonal)*(arena_dims.xsize()**(0.1))*0.055
+            return (((left_calc + right_calc) / 2) / diagonal)*(arena_dims.xsize()**(0.5))*0.055
 
         variance = Calculator._variance_calc(clusters)
         nearest_neighbors = Calculator._nn_calc(clusters)
         mean_neighbor = [statistics.mean(i) for i in zip(*nearest_neighbors)]
-        return ((0.055)*arena_dims.xsize()**(0.75)*((statistics.mean(mean_neighbor)/diagonal))*2**(variance/diagonal))
-       # return ((0.055)*arena_dims.xsize()**(0.85)*((statistics.mean(mean_neighbor)/diagonal)*2**(variance/diagonal)
+        # return ((0.055)*arena_dims.xsize()**(0.75)*(0.7**(len(list(clusters.clusters))))*((statistics.mean(mean_neighbor)/diagonal))*2**(variance/diagonal)) # RN 
+        return ((0.055)*(arena_dims.xsize()**(0.1))*((len(list(clusters.clusters)))**0.5)*(statistics.mean(mean_neighbor)/diagonal)*2**(variance/diagonal)) # PL 
 
 
 
