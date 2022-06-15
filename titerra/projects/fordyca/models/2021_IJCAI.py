@@ -47,7 +47,7 @@ import titerra.projects.fordyca.models.ode_solver as ode
 from titerra.projects.fordyca.models.blocks import IntraExp_BlockAcqRate_NRobots
 from titerra.projects.fordyca.models.perf_measures import InterExp_RawPerf_NRobots, InterExp_Scalability_NRobots, InterExp_SelfOrg_NRobots
 import titerra.projects.fordyca.models.diffusion as diffusion
-
+import titerra.projects.fordyca.models.scenario_heterogeneity as sh # added for testing purposes
 
 def available_models(category: str):
     if category == 'intra':
@@ -272,9 +272,13 @@ class IntraExp_ODE_NRobots():
         # crwD calculated directly from simulation inputs/configuration
         acq = IntraExp_BlockAcqRate_NRobots(self.main_config, self.config)
         alpha_bN = acq.run(criteria, exp_num, cmdopts)[0]
+
+        spec = ExperimentSpec(criteria, exp_num, cmdopts) 
+        H_m = sh.Calculator(cmdopts['scenario']).from_results(self.main_config, cmdopts, spec)
         crwD = diffusion.crwD_for_avoiding(N=N,
                                            wander_speed=float(self.config['wander_mean_speed']),
                                            ticks_per_sec=time_params['ticks_per_sec'],
+                                           scenario_hetero = H_m,
                                            scenario=cmdopts['scenario'])
 
         params = {

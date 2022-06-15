@@ -73,6 +73,7 @@ class IntraExp_BlockAcqRate_NRobots():
                 wander_speed: float,
                 ticks_per_sec: int,
                 avg_acq_dist: float,
+                scenario_hetero: float,
                 scenario: str) -> float:
         """
         Calculates the CRW Diffusion constant in :xref:`Harwell2021b` for bounded arena geometry,
@@ -81,6 +82,7 @@ class IntraExp_BlockAcqRate_NRobots():
         D = diffusion.crwD_for_searching(N=N,
                                          wander_speed=wander_speed,
                                          ticks_per_sec=ticks_per_sec,
+                                         scenario_hetero = scenario_hetero,
                                          scenario=scenario)
 
         diff_time = avg_acq_dist ** 2 / (2 * D)
@@ -148,6 +150,7 @@ class IntraExp_BlockAcqRate_NRobots():
         alpha_b = self._kernel(N=n_robots,
                                wander_speed=float(self.config['wander_mean_speed']),
                                ticks_per_sec=time_params['ticks_per_sec'],
+                               scenario_hetero = avg_hetero,
                                avg_acq_dist=avg_acq_dist,
                                scenario=cmdopts['scenario'])
 

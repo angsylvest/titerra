@@ -26,6 +26,7 @@ import sierra.core.variables.time_setup as ts
 def crwD_for_searching(N: float,
                        wander_speed: float,
                        ticks_per_sec: int,
+                       scenario_hetero: float,
                        scenario: str) -> float:
     """
     Approximates the diffusion constant in a swarm of N CRW robots for bounded arena geometry for
@@ -59,7 +60,7 @@ def crwD_for_searching(N: float,
         # L_s = 0.252
 
         # ODE-3 large (with heterogeneity), const-rho
-        L_s = 0.288
+        L_s = scenario_hetero
 
     elif 'PL' in scenario:
         # ODE-3 small const-rho
@@ -84,8 +85,9 @@ def crwD_for_searching(N: float,
         # L_s = 0.252 + (-0.318*0.004643971069)
 
         # ODE-3 large (with heterogenity), const-rho
-        L_s = 0.288 + (-0.302*0.004643971069)
+        # L_s = 0.288 + (-0.302*0.004643971069)
 
+        L_s = scenario_hetero
     elif 'DS' in scenario:
         # ODE-3 small const-rho (ORIGINAL)
         # L_s = 0.055 * (1.5 * math.sqrt(2.0))
@@ -109,8 +111,9 @@ def crwD_for_searching(N: float,
         # L_s = 0.252 + (-0.318*0.1980694901)
 
         # ODE-3 large (with heterogeneity), const-rho
-        L_s = 0.288 + (-0.302*0.1980694901)
+        # L_s = 0.288 + (-0.302*0.1980694901)
 
+        L_s = scenario_hetero
     elif 'SS' in scenario:
         # ODE-3 small const-rho
         # L_s = 0.055 * 2 * math.sqrt(2.0)
@@ -134,19 +137,20 @@ def crwD_for_searching(N: float,
         # L_s = 0.252 + (-0.318*0.1222849675)
 
         # ODE-3 large (with heterogeneity), const-rho
-        L_s = 0.288 + (-0.302*0.1222849675)
+        # L_s = 0.288 + (-0.302*0.1222849675)
 
+        L_s = scenario_hetero
     F_N = N * drift_xy * L_s
     return F_N
 
 
-def crwD_for_avoiding(N: float, wander_speed: float, ticks_per_sec: int, scenario: str) -> float:
+def crwD_for_avoiding(N: float, wander_speed: float, ticks_per_sec: int, scenario_hetero: float, scenario: str) -> float:
     """
     Approximates the diffusion constant in a swarm of N CRW robots for bounded arena geometry for
     collision avoidance. From :xref:`Harwell2021b`, inspired by the results in :xref:`Codling2010`.
 
     """
-    D = crwD_for_searching(N, wander_speed, ticks_per_sec, scenario) * 1.0 / 0.055
+    D = crwD_for_searching(N, wander_speed, ticks_per_sec, scenario_hetero, scenario) * 1.0 / 0.055
 
     if 'PL' in scenario:
         # ODE-3 small const-rho

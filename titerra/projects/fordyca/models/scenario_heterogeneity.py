@@ -104,9 +104,12 @@ class Calculator:
         variance = Calculator._variance_calc(clusters)
         nearest_neighbors = Calculator._nn_calc(clusters)
         mean_neighbor = [statistics.mean(i) for i in zip(*nearest_neighbors)]
-        # return ((0.055)*arena_dims.xsize()**(0.75)*(0.7**(len(list(clusters.clusters))))*((statistics.mean(mean_neighbor)/diagonal))*2**(variance/diagonal)) # RN 
-        return ((0.055)*(arena_dims.xsize()**(0.1))*((len(list(clusters.clusters)))**0.5)*(statistics.mean(mean_neighbor)/diagonal)*2**(variance/diagonal)) # PL 
 
+        if 'PL' in self.scenario: 
+             return ((0.055)*(arena_dims.xsize()**(0.1))*((len(list(clusters.clusters)))**0.5)*(statistics.mean(mean_neighbor)/diagonal)*2**(variance/diagonal)) # PL 
+
+        if 'RN' in self.scenario: 
+             return ((0.055)*arena_dims.xsize()**(0.75)*(0.7**(len(list(clusters.clusters))))*((statistics.mean(mean_neighbor)/diagonal))*2**(variance/diagonal)) # RN  
 
 
     @staticmethod
